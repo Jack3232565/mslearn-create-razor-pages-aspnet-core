@@ -14,9 +14,32 @@ public class PizzaListModel : PageModel
         _service = service;
     }
 
+    [BindProperty]
+    public Pizza NewPizza { get; set; } = default!;
+    
     public void OnGet()
     {
         PizzaList = _service.GetPizzas();
     }
+
+    public IActionResult OnPost()
+    {
+        if (!ModelState.IsValid || NewPizza == null)
+        {
+            return Page();
+        }
+
+        _service.AddPizza(NewPizza);
+
+        return RedirectToAction("Get");
+    }
+
+        public IActionResult OnPostDelete(int id)
+    {
+        _service.DeletePizza(id);
+
+        return RedirectToAction("Get");
+    }
+
 }
 }
